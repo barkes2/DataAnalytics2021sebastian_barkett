@@ -4,20 +4,21 @@ GPW3_GRUMP <- read.csv("GPW3_GRUMP_SummaryInformation_2010.csv")
 View(GPW3_GRUMP)
 #or read in excel file directly or by 
 #csv convert - 2010EPI_data.xls #(EPI2010_all countries or EPI2010_onlyEPIcountries tabs)
-#also for other datasewts enter these in R command window pannel or cmd line
-data()
-help(data)
-EPI_data <- read.csv("2010EPI_data.csv")
+#also for other datasets enter these in R command window panel or cmd line
+data() #information related to R datasets
+help(data) #opens help window for data sets
+EPI_data<-read.csv("2010EPI_data.csv") #reads in .csv file from the pathway you outline. check your working directory with command "getwd()"
 #Note: replace default data frame name - cannot start with numbers! Munging
 #Note: replace <path> with either a directory path or use setwd("<path>")
-View(EPI_data)
+View(EPI_data) #opens window with EPI_data for visual inspecting/to begin munging the dataset
 attach(EPI_data) #set the 'default' object
-fix(EPI_data) #launches a simple data editor - test it
+fix(EPI_data) #launches a simple data editor - very easy to use
 EPI #prints out values EPI_data$EPI
 tf <- is.na(EPI) #records True value is NA
 E <- EPI[!tf] #filters out NA values, new array
 summary(EPI) #stats
-fivenum(EPI,na.rm=TRUE)
+fivenum(EPI,na.rm=TRUE) #returns Tukey's five number summary (min,lower hinge, median, upper-hinge, max) for the data
+#if na.rm=TRUE all NA and NaN values are dropped before the statistics are computed
 stem(EPI) #stem and leaf plot
 hist(EPI)
 hist(EPI, seq(30., 95., 1.0), prob=TRUE)
