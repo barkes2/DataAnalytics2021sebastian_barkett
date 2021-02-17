@@ -1,7 +1,9 @@
+#reminder that your pathway is in Documents/Downloads/<filename> so go about trx all files to folder
 #read in csv file - 
-GPW3_GRUMP_SummaryInformation_2010.csv
+GPW3_GRUMP <- read.csv("GPW3_GRUMP_SummaryInformation_2010.csv")
+View(GPW3_GRUMP)
 #or read in excel file directly or by 
-csv convert - 2010EPI_data.xls #(EPI2010_all countries or EPI2010_onlyEPIcountries tabs)
+#csv convert - 2010EPI_data.xls #(EPI2010_all countries or EPI2010_onlyEPIcountries tabs)
 #also for other datasewts enter these in R command window pannel or cmd line
 data()
 help(data)
