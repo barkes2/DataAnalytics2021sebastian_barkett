@@ -88,10 +88,9 @@ qqplot(ENVHEALTH,BIODIVERSITY)
 
 #Excercise 2 Conditional Filtering (below)
 EPILand<-EPI[!Landlock]
-Eland <- EPILand[!is.na(EPILand)]
-Eland
-hist(ELand)
-hist(ELand, seq(30., 95., 1.0), prob=TRUE)
+Eland<-EPILand[!is.na(EPILand)]#issues with creating histogram using hist(Eland) function (Error: object not found)
+hist(EPILand)
+hist(EPILand, seq(30., 95., 1.0), prob=TRUE)
 #Repeat Excersize 1 look at: No_surface_water, Desert and High_Population_Density
 
 #My Excercise: how to filter on EPI_regions or GEO_subregion?
