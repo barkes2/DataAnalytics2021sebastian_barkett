@@ -23,6 +23,7 @@ stem(EPI) #stem and leaf plot
 hist(EPI)
 hist(EPI, seq(30., 95., 1.0), prob=TRUE)
 lines(density(EPI,na.rm=TRUE,bw=1.)) # or try bw="SJ"
+lines(density(EPI,na.rm=TRUE,bw="SJ"))
 rug(EPI)
 #Use help(<comman>), e.g. >help(stem)
 #See group1/lab1_summary.R
@@ -45,9 +46,50 @@ qqplot(EPI,DALY)
 #Excel files for dif distributions; expanded in the folder: e.g. lognorm.xls
 help(distributions) #In R
 
+ENVHEALTH #prints out values EPI_data$ENVHEALTH
+tf <- is.na(ENVHEALTH) #records True value is NA
+EH <- ENVHEALTH[!tf] #filters out NA values, new array
+summary(ENVHEALTH) #stats
+fivenum(ENVHEALTH,na.rm=TRUE) #returns Tukey's five number summary (min,lower hinge, median, upper-hinge, max) for the data
+#if na.rm=TRUE all NA and NaN values are dropped before the statistics are computed
+stem(ENVHEALTH) #stem and leaf plot
+hist(ENVHEALTH)
+hist(ENVHEALTH, seq(30., 95., 1.0), prob=TRUE)
+lines(density(ENVHEALTH,na.rm=TRUE,bw=1.)) # or try bw="SJ"
+lines(density(ENVHEALTH,na.rm=TRUE,bw="SJ"))
+rug(ENVHEALTH)
+plot(ecdf(ENVHEALTH), do.points=FALSE, verticals=TRUE) #cumulative density function
+par(pty="s")
+qqnorm(ENVHEALTH); qqline(ENVHEALTH) #Quantile-Quantile?
+qqplot(qt(ppoints(250), df = 5), x, xlab = "Q-Q plot for t dsn") #make a Q-Q plot against the generating dist by: x<-seq(30,95,1)
+qqline(x)
+boxplot(ENVHEALTH,DALY) #Comparing distributions
+qqplot(ENVHEALTH,DALY)
+
+BIODIVERSITY #prints out values EPI_data$BIODIVERSITY
+tf <- is.na(BIODIVERSITY) #records True value is NA
+B <- BIODIVERSITY[!tf] #filters out NA values, new array
+summary(BIODIVERSITY) #stats
+fivenum(BIODIVERSITY,na.rm=TRUE) #returns Tukey's five number summary (min,lower hinge, median, upper-hinge, max) for the data
+#if na.rm=TRUE all NA and NaN values are dropped before the statistics are computed
+stem(BIODIVERSITY) #stem and leaf plot
+hist(BIODIVERSITY)
+hist(BIODIVERSITY, seq(30., 95., 1.0), prob=TRUE)
+lines(density(BIODIVERSITY,na.rm=TRUE,bw=1.)) # or try bw="SJ"
+lines(density(BIODIVERSITY,na.rm=TRUE,bw="SJ"))
+rug(BIODIVERSITY)
+plot(ecdf(BIODIVERSITY), do.points=FALSE, verticals=TRUE) #cumulative density function
+par(pty="s")
+qqnorm(BIODIVERSITY); qqline(BIODIVERSITY) #Quantile-Quantile?
+qqplot(qt(ppoints(250), df = 5), x, xlab = "Q-Q plot for t dsn") #make a Q-Q plot against the generating dist by: x<-seq(30,95,1)
+qqline(x)
+boxplot(ENVHEALTH,BIODIVERSITY) #Comparing distributions
+qqplot(ENVHEALTH,BIODIVERSITY)
+
 #Excercise 2 Conditional Filtering (below)
 EPILand<-EPI[!Landlock]
 Eland <- EPILand[!is.na(EPILand)]
+Eland
 hist(ELand)
 hist(ELand, seq(30., 95., 1.0), prob=TRUE)
 #Repeat Excersize 1 look at: No_surface_water, Desert and High_Population_Density
