@@ -1,9 +1,53 @@
 #Lab 2 part 2
 #using dataset_multipleRegression.csv, use the unemployment rate (UNEM) and number of spring high school graduates (HGRAD) to predict the fall enrollment (ROLL) for this year by knowing that UNEM=7% and HGRAD=90,000
-getwd()
+mR<-read.csv("dataset_multipleRegression.csv")
+attach(mR)
+#fix(mR)
+mR
+summary(mR)
+#View(mR)
+modelmR<-lm(ROLL~UNEM+HGRAD)
+modelmR
+cmR<-predict(modelmR,interval = "confidence")
+cmR
+mydata<-cbind(mR,cmR)
+mydata
+library("ggplot2")
+p<-ggplot(mydata,aes(ROLL,HGRAD))+geom_point()+stat_smooth(method=lm)
+p+geom_line(aes(y=lwr),color="red",linetype="dashed")+geom_line(aes(y=upr),color="red",linetype="dashed")
+help(lm)
+modelmR<-lm(ROLL~UNEM) #Regression; Y = m * X2 + b (equation for a line)
+summary(modelmR)
+plot(ROLL,UNEM,xlab="ROLL",ylab="UNEM",main="ROLL vs UNEM Trendline")
+help(abline)
+abline(ROLL,UNEM)
+segments(ROLL,fitted(modelmR),ROLL,UNEM)
+par(mfrow=c(2,2))
+plot(model4)
+influenceIndexPlot(model4,id.n=3)
+plot(hatvalues(model4))
+
+#OTHER ITEMS
+boxplot(ENVHEALTH,DALY,AIR_H,WATER_H)
+lmENVH<-lm(ENVHEALTH~DALY+AIR_H+WATER_H)
+lmENVH
+summary(lmENVH)
+cENVH<-coef(lmENVH)
+cENVH
+
+#Predict
+DALYNEW<-c(seq(5,95,5))
+DALYNEW
+AIR_HNEW<-c(seq(5,95,5))
+AIR_HNEW
+WATER_HNEW<-c(seq(5,95,5))
+WATER_HNEW
+NEW<-data.frame(DALYNEW,AIR_HNEW,WATER_HNEW)
+NEW
+pENV<-predict(lmENVH,NEW,interval="prediction")
+cENV<-predict(lmENVH,NEW,interval="confidence")
 
 #repeat and add per capita income (INC) to the model. Predict ROLL if INC=$25,000
-
 #=================================================================================================
 #retreive the abalone.csv dataset, perform knn classification to get predictors for age (rings). Interpretation not required.
 #abalone dataset from UCI repository
@@ -17,24 +61,33 @@ summary(abalone)
 str(abalone)
 #summary of the abalone rings column
 summary(abalone$rings)
-
 #"rings" variable has a range between 1-29; we want to predict this variable
 #break the rings variable into 3 levels "young"(<8) "adult"(8-11) and "old"(11<)
 abalone$rings<-as.numeric(abalone$rings)
 abalone$rings<-cut(abalone$rings,br=c(-1,8,11,35),labels=c("young",'adult','old'))
 abalone$rings<-as.factor(abalone$rings)
 summary(abalone$rings)
-#remove sex variable because KNN needs numeric
 #z<-abalone
 aba<-abalone
-aba$sex<-NULL
-#normalize the data using min max normalization
+aba$sex<-NULL #remove sex variable because KNN needs numeric
 normalize<-function(x){
   return((x-min(x))/(max(x)-min(x)))
-}
+} #normalize the data using min max normalization
 aba[1:7]<-as.data.frame(lapply(aba[1:7],normalize))
 summary(aba$shucked_weight)
-
+#After normalization each variable has a min of 0 and max of 1, we will now split the data into train and test sets
+ind<-sample(2,nrow(aba),replace=TRUE,prob=c(0.7,0.3))
+KNNtrain<-aba[ind==1,]
+KNNtest<-aba[ind==2,]
+sqrt(2918) #make k equal to the square root of 2918, the number of observations in the training set, sqrt(2918) is roughly 54.01852->rounds to 55
+#take the odd value for k value
+library(class)
+help("knn") #documentation
+KNNpred<-knn(train=KNNtrain[1:7],test=KNNtest[1:7],cl=KNNtrain$rings,k=55) #KNNtrain is training set cases;KNNtest is test set cases, and cl indicates the factor of true classifications of the KNNtrain set
+KNNpred #prediction
+table(KNNpred) #organize the prediction into a table (below)
+#young adult  old 
+# 413   726   117 
 #====================================================================================================================================================================
 #exercise 3
 set.seed(123)
