@@ -277,14 +277,91 @@ cENVH<-coef(lmENVH)
 cENVH
 #(Intercept)          DALY         AIR_H       WATER_H 
 #-1.458233e-05  5.000248e-01  2.499979e-01  2.499861e-01 
+
 #Predict
 DALYNEW<-c(seq(5,95,5))
+DALYNEW
+#[1]  5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95
 AIR_HNEW<-c(seq(5,95,5))
+AIR_HNEW
+#[1]  5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95
 WATER_HNEW<-c(seq(5,95,5))
+WATER_HNEW
+#[1]  5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95
 NEW<-data.frame(DALYNEW,AIR_HNEW,WATER_HNEW)
+NEW
+#DALYNEW AIR_HNEW WATER_HNEW
+#1        5        5          5
+#2       10       10         10
+#3       15       15         15
+#4       20       20         20
+#5       25       25         25
+#6       30       30         30
+#7       35       35         35
+#8       40       40         40
+#9       45       45         45
+#10      50       50         50
+#11      55       55         55
+#12      60       60         60
+#13      65       65         65
+#14      70       70         70
+#15      75       75         75
+#16      80       80         80
+#17      85       85         85
+#18      90       90         90
+#19      95       95         95
 pENV<-predict(lmENVH,NEW,interval="prediction")
+pENV #readout of 'fit' 'lwr' and 'upr'
 cENV<-predict(lmENVH,NEW,interval="confidence")
-
+cENV #readout of 'fit' 'lwr' and 'upr'
 #repeat these for the variables AIR_E and CLIMATE
 
-#Due on March 4th by 11:59 on LMS link available on Feb 25th
+model5<-lm(EPI~AIR_E+CLIMATE) #Regression; Y = m * X2 + b (equation for a line)
+summary(model5)
+#Call:
+#  lm(formula = EPI ~ AIR_E + CLIMATE)
+#
+#Residuals:
+#  Min      1Q  Median      3Q     Max 
+#-27.070 -10.028   1.681   9.104  30.883 
+#
+#Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)    
+#(Intercept) 61.47701    4.55071  13.509   <2e-16 ***
+#  AIR_E       -0.14659    0.07844  -1.869   0.0635 .  
+#CLIMATE      0.07489    0.06219   1.204   0.2303    
+#---
+#  Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#
+#Residual standard error: 12.33 on 160 degrees of freedom
+#(68 observations deleted due to missingness)
+#Multiple R-squared:  0.02456,	Adjusted R-squared:  0.01237 
+#F-statistic: 2.015 on 2 and 160 DF,  p-value: 0.1367
+plot(EPI,AIR_E,xlab="EPI",ylab="AIR_E",main="EPI & AIR_E Trendline")
+abline(model5)
+segments(EPI,fitted(model5),EPI,AIR_E)
+plot(EPI,CLIMATE,xlab="EPI",ylab="CLIMATE",main="EPI & CLIMATE Trendline")
+abline(model5)
+segments(EPI,fitted(model5),EPI,CLIMATE)
+par(mfrow=c(2,2))
+plot(model5)
+influenceIndexPlot(model5,id.n=3)
+plot(hatvalues(model5))
+
+#Predict
+AIR_ENEW<-c(seq(5,95,5))
+AIR_ENEW
+#[1]  5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95
+CLIMATENEW<-c(seq(5,95,5))
+CLIMATENEW
+#[1]  5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95
+NEWer<-data.frame(AIR_ENEW,CLIMATENEW)
+NEWer
+cEPI<-coef(model5)
+cEPI
+lmEPI<-lm(EPI~AIR_E+CLIMATE) 
+#pEPI<-predict(lmEPI,NEWer,interval="prediction")
+#pEPI
+#coEPI<-predict(lmEPI,NEWer,interval="confidence")
+#coEPI
+#===============================================================================
