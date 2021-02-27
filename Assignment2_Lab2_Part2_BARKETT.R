@@ -35,11 +35,12 @@ normalize<-function(x){
 aba[1:7]<-as.data.frame(lapply(aba[1:7],normalize))
 summary(aba$shucked_weight)
 
-#=================================================================================================
+#====================================================================================================================================================================
 #exercise 3
 set.seed(123)
 sim.xy<-function(n,mean,sd)cbind(rnorm(n,mean[1],sd[1]),rnorm(n,mean[2],sd[2]))
-xy<-rbind(sim.xy(100,c(0,0),c(.2,.2)),sim.xy(100,c(2.5,0),c(.4,.2)),sim.xy(100,c(1.25,.5),c(.3,.2))) #generate three clouds of points, well separated in the 2D plane
+xy<-rbind(sim.xy(100,c(0,0),c(.2,.2)),sim.xy(100,c(2.5,0),c(.4,.2)),sim.xy(100,c(1.25,.5),c(.3,.2))) 
+#generate three clouds of points, well separated in the 2D plane
 xy
 xy[1,]<-c(0,2) #converting the 1st observation to an outlying value
 km3<-kmeans(xy,3) #ask for three clusters
@@ -96,27 +97,24 @@ set.seed(123)
 km_res<-kmeans(dfiris2,centers=4,nstart=20) #centers is number of clusters
 sil<-silhouette(km_res$cluster,dist(dfiris2))
 fviz_silhouette(sil)
-
-
-#computing kmeans with k=4
-set.seed(123)
-KMEANSRESULT<-kmeans(dfiris2,4,n=25) #kmeans clustering result with 4 clusters after 25 iterations pick the best
-print(KMEANSRESULT)#printing the results
-KMEANSRESULT2<-kmeans(dfiris2,3,n=25) #clearly too many clustering groups if ran with 4
-print(KMEANSRESULT2)#printing the results
-aggregate(dfiris, by-list(cluster-KMEANSRESULT2$cluster),mean) #computing the means of all three cluster groups
-
-iris.dist<-dist(iris[,-5])
-iris.dist #weird matrix style representation
-iris.mds<-cmdscale(iris.dist)
-iris.mds #150 rows, 2 columns ([,1];[,2])
-c.chars<-c("*","o","+")[as.integer(iris$Species)]
-#iris$Species is the 5th column
-c.chars
-#KMEANSRESULT is the variable you used in your kmeans lab assignment for the return variable
-KMEANSRESULT<-kmeans()
-a.cols<-rainbow(3)[KMEANSRESULT$cluster]
-
-#using this dataframe, apply kmeans with 1000 iterations
-
+#
+#making a fviz_cluster()
+library(factoextra) #already loaded above but add incase i use code later
+fviz_cluster(km_res,dfiris2,ellipse.type="norm", main="Iris Cluster Plot")
+#
+#Applying kmeans with my defined k and 1000 iterations
+fit<-kmeans(dfiris2,centers=3,iter.max=1000)
+cluster.data<-data.frame(dfiris2,fit$cluster)
+cluster.data
+#
+#plotting clustering efforts with 3 cluster groups
+fviz_cluster(fit,dfiris2,ellipse.type="norm",main="Iris Cluster Plot")
+#
+#replotting clustering efforts with 4 cluster groups
+fit2<-kmeans(dfiris2,centers=4,iter.max=1000)
+fviz_cluster(fit2,dfiris2,ellipse.type="norm",main="Iris Cluster Plot")
+#
 #use table(iris[5],<your clustering>) to assess your results
+table(iris[5],cluster.data[5])
+#     1:3
+#1:3   0
