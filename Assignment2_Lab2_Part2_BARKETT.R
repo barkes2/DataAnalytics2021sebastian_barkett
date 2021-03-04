@@ -1,51 +1,58 @@
 #Lab 2 part 2
-#using dataset_multipleRegression.csv, use the unemployment rate (UNEM) and number of spring high school graduates (HGRAD) to predict the fall enrollment (ROLL) for this year by knowing that UNEM=7% and HGRAD=90,000
+#using dataset_multipleRegression.csv, use the unemployment rate (UNEM) and 
+#number of spring high school graduates (HGRAD) to predict the fall enrollment 
+#(ROLL) for this year by knowing that UNEM=7% and HGRAD=90,000
+#
+#This dataset contains 29 years worth of data related to fall enrollment (ROLL)
+#unemployment rate (UNEM), spring high school graduates (HGRAD), and per capita
+#income (INC).  We will start by making a prediction of ROLL based on regression.
 mR<-read.csv("dataset_multipleRegression.csv")
 attach(mR)
 #fix(mR)
 mR
-summary(mR)
-#View(mR)
-modelmR<-lm(ROLL~UNEM+HGRAD)
-modelmR
-cmR<-predict(modelmR,interval = "confidence")
-cmR
-mydata<-cbind(mR,cmR)
-mydata
-library("ggplot2")
-p<-ggplot(mydata,aes(ROLL,HGRAD))+geom_point()+stat_smooth(method=lm)
-p+geom_line(aes(y=lwr),color="red",linetype="dashed")+geom_line(aes(y=upr),color="red",linetype="dashed")
-help(lm)
-modelmR<-lm(ROLL~UNEM) #Regression; Y = m * X2 + b (equation for a line)
-summary(modelmR)
-plot(ROLL,UNEM,xlab="ROLL",ylab="UNEM",main="ROLL vs UNEM Trendline")
-help(abline)
-abline(ROLL,UNEM)
-segments(ROLL,fitted(modelmR),ROLL,UNEM)
-par(mfrow=c(2,2))
-plot(model4)
-influenceIndexPlot(model4,id.n=3)
-plot(hatvalues(model4))
+#making a scatterplot
+plot(mR$UNEM,mR$ROLL)
+#correlation
+cor(mR$UNEM,mR$ROLL)
+#Model: trying a simple linear regression
+r<-lm(ROLL~UNEM,data=mR) #Y first tilda then name of X
+#add regression line (must run regression before line)
+abline(r)
+summary(r)
+#names to access regression object
+names(r)
+#fitted values for xs, and plot fitted v UNEM
+fitted(r)
+plot(mR$UNEM,r$fitted)
+#1.) how to make a prediction with a certain x?
+3957.0+1133.8*7
+#[1] 11893.6
+#predicted value for ROLL (fitted) at unemployment rate of (UNEM) of 7%
+#yields a fall enrollment of 11893.6 based on the fitted regression model
 
-#OTHER ITEMS
-boxplot(ENVHEALTH,DALY,AIR_H,WATER_H)
-lmENVH<-lm(ENVHEALTH~DALY+AIR_H+WATER_H)
-lmENVH
-summary(lmENVH)
-cENVH<-coef(lmENVH)
-cENVH
+#2.)what if we use coefficient?
+coef(r) #gives intercept and slope coef
+coef(r)[1] #gives intercept
+coef(r)[2] #gives slope coef
+r$coef[1] #another way to run same above command
 
-#Predict
-DALYNEW<-c(seq(5,95,5))
-DALYNEW
-AIR_HNEW<-c(seq(5,95,5))
-AIR_HNEW
-WATER_HNEW<-c(seq(5,95,5))
-WATER_HNEW
-NEW<-data.frame(DALYNEW,AIR_HNEW,WATER_HNEW)
-NEW
-pENV<-predict(lmENVH,NEW,interval="prediction")
-cENV<-predict(lmENVH,NEW,interval="confidence")
+r$coef[1]+r$coef[2]*7
+#this above command gives us the intercept value of 11893.81 based on a 
+#UNEM of 7% slightly more sig figs that prior method
+
+#3.) Using the predict function
+predict(r,list(UNEM=7))
+predict(r,data.frame(UNEM=c(7)))
+#both above predict functions give estimates of 11893.81
+
+#Predictive vs confidence interval
+predict(r,data.frame(UNEM=c(7)),interval="confidence", level=0.95)
+#fit      lwr      upr
+#1 11893.81 10508.08 13279.53
+predict(r,data.frame(UNEM=c(7)),interval="prediction", level=0.95)
+
+#when do you use predictive vs confidence interval
+
 
 #repeat and add per capita income (INC) to the model. Predict ROLL if INC=$25,000
 #=================================================================================================
