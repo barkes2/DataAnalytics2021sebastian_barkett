@@ -57,4 +57,97 @@ hist(nyt15$Impressions,breaks=14,ylab="Count of Users within Bin Impression Grou
 hist(nyt23$Impressions,breaks=14,ylab="Count of Users within Bin Impression Group",xlab="Impressions",main="Histogram Impressions NYT23")
 hist(nyt31$Impressions,breaks=14,ylab="Count of Users within Bin Impression Group",xlab="Impressions",main="Histogram Impressions NYT31")
 #Now we will plot the ECDF or Empirical distribution function for "Age" and "Impressions"
+library(gridExtra)
+library(grid)
+g<-ggplot(nyt6, aes(x=Age,y=Impressions))
+g+stat_ecdf()
+g2<-ggplot(nyt12, aes(x=Age,y=Impressions))
+g2+stat_ecdf()
+g3<-ggplot(nyt15, aes(x=Age,y=Impressions))
+g3+stat_ecdf()
+g4<-ggplot(nyt23, aes(x=Age,y=Impressions))
+g4+stat_ecdf()
+g5<-ggplot(nyt31, aes(x=Age,y=Impressions))
+g5+stat_ecdf()
+grid.arrange(g+stat_ecdf(),g2+stat_ecdf(),g3+stat_ecdf(),g4+stat_ecdf(),g5+stat_ecdf(),top="ECDF for NYT6,12,15,23,31 Age vs Impressions")
+#Time to plot the q-q distribution
+par(mfrow=c(2,3))
+qqnorm(nyt6Agenz)
+qqline(nyt6Agenz,col='red')
+qqnorm(nyt12Agenz)
+qqline(nyt12Agenz,col='red')
+qqnorm(nyt15Agenz)
+qqline(nyt15Agenz,col='red')
+qqnorm(nyt23Agenz)
+qqline(nyt23Agenz,col='red')
+qqnorm(nyt31Agenz)
+qqline(nyt31Agenz,col='red')
 
+par(mfrow=c(2,3))
+qqnorm(nyt6$Impressions)
+qqline(nyt6$Impressions,col='blue')
+qqnorm(nyt12$Impressions)
+qqline(nyt12$Impressions,col='blue')
+qqnorm(nyt15$Impressions)
+qqline(nyt15$Impressions,col='blue')
+qqnorm(nyt23$Impressions)
+qqline(nyt23$Impressions,col='blue')
+qqnorm(nyt31$Impressions)
+qqline(nyt31$Impressions,col='blue')
+#Time for significance tests that suit my variables. Is the null hypothesis valid?
+#lets use an unpaired t-test to compare Age and Impressions
+t.test(nyt6Agenz,nyt6$Impressions,mu=0,alt="two.sided",conf=0.95,var.eq=F,paired=F)
+#using an unpaired T-test as we cannot determine relationships of Age=0 with Impression
+#so our x,y arguments do not have the same length.
+
+#Welch Two Sample t-test
+#data:  nyt6Agenz and nyt6$Impressions
+#t = 1654.9, df = 549265, p-value < 2.2e-16
+#alternative hypothesis: true difference in means is not equal to 0
+#95 percent confidence interval:
+#  37.04526 37.13311
+#sample estimates:
+# mean of x  mean of y 
+# 42.084682  4.995498 
+
+#now lets run the comparison for the other 4 datasets
+t.test(nyt12Agenz,nyt12$Impressions,mu=0,alt="two.sided",conf=0.95,var.eq=F,paired=F)
+#Welch Two Sample t-test
+#data:  nyt12Agenz and nyt12$Impressions
+#t = 1188.4, df = 284214, p-value < 2.2e-16
+#alternative hypothesis: true difference in means is not equal to 0
+#95 percent confidence interval:
+#  37.05027 37.17268
+#sample estimates:
+#  mean of x mean of y 
+#42.11285   5.00138 
+t.test(nyt15Agenz,nyt15$Impressions,mu=0,alt="two.sided",conf=0.95,var.eq=F,paired=F)
+#Welch Two Sample t-test
+#data:  nyt15Agenz and nyt15$Impressions
+#t = 1108.6, df = 245743, p-value < 2.2e-16
+#alternative hypothesis: true difference in means is not equal to 0
+#95 percent confidence interval:
+#  37.06662 37.19792
+#sample estimates:
+#  mean of x mean of y 
+#42.133704  5.001431 
+t.test(nyt23Agenz,nyt23$Impressions,mu=0,alt="two.sided",conf=0.95,var.eq=F,paired=F)
+#Welch Two Sample t-test
+#data:  nyt23Agenz and nyt23$Impressions
+#t = 1100.4, df = 240667, p-value < 2.2e-16
+#alternative hypothesis: true difference in means is not equal to 0
+#95 percent confidence interval:
+#  37.04648 37.17868
+#sample estimates:
+#  mean of x mean of y 
+#42.118039  5.005458 
+t.test(nyt31Agenz,nyt31$Impressions,mu=0,alt="two.sided",conf=0.95,var.eq=F,paired=F)
+#Welch Two Sample t-test
+#data:  nyt31Agenz and nyt31$Impressions
+#t = 1253.7, df = 315899, p-value < 2.2e-16
+#alternative hypothesis: true difference in means is not equal to 0
+#95 percent confidence interval:
+#  37.06273 37.17880
+#sample estimates:
+#  mean of x mean of y 
+#42.11450   4.99374 
