@@ -95,59 +95,35 @@ qqline(nyt23$Impressions,col='blue')
 qqnorm(nyt31$Impressions)
 qqline(nyt31$Impressions,col='blue')
 #Time for significance tests that suit my variables. Is the null hypothesis valid?
-#lets use an unpaired t-test to compare Age and Impressions
-t.test(nyt6Agenz,nyt6$Impressions,mu=0,alt="two.sided",conf=0.95,var.eq=F,paired=F)
-#using an unpaired T-test as we cannot determine relationships of Age=0 with Impression
-#so our x,y arguments do not have the same length.
-
-#Welch Two Sample t-test
-#data:  nyt6Agenz and nyt6$Impressions
-#t = 1654.9, df = 549265, p-value < 2.2e-16
-#alternative hypothesis: true difference in means is not equal to 0
-#95 percent confidence interval:
-#  37.04526 37.13311
-#sample estimates:
-# mean of x  mean of y 
-# 42.084682  4.995498 
+library(dplyr)
+df1<-filter(nyt6,Age>0,Impressions>0)
+chisq.test(df1$Age,df1$Impressions)
+#Pearson's Chi-squared test
+#data:  df1$Age and df1$Impressions
+#X-squared = 1658.6, df = 1700, p-value = 0.7592
 
 #now lets run the comparison for the other 4 datasets
-t.test(nyt12Agenz,nyt12$Impressions,mu=0,alt="two.sided",conf=0.95,var.eq=F,paired=F)
-#Welch Two Sample t-test
-#data:  nyt12Agenz and nyt12$Impressions
-#t = 1188.4, df = 284214, p-value < 2.2e-16
-#alternative hypothesis: true difference in means is not equal to 0
-#95 percent confidence interval:
-#  37.05027 37.17268
-#sample estimates:
-#  mean of x mean of y 
-#42.11285   5.00138 
-t.test(nyt15Agenz,nyt15$Impressions,mu=0,alt="two.sided",conf=0.95,var.eq=F,paired=F)
-#Welch Two Sample t-test
-#data:  nyt15Agenz and nyt15$Impressions
-#t = 1108.6, df = 245743, p-value < 2.2e-16
-#alternative hypothesis: true difference in means is not equal to 0
-#95 percent confidence interval:
-#  37.06662 37.19792
-#sample estimates:
-#  mean of x mean of y 
-#42.133704  5.001431 
-t.test(nyt23Agenz,nyt23$Impressions,mu=0,alt="two.sided",conf=0.95,var.eq=F,paired=F)
-#Welch Two Sample t-test
-#data:  nyt23Agenz and nyt23$Impressions
-#t = 1100.4, df = 240667, p-value < 2.2e-16
-#alternative hypothesis: true difference in means is not equal to 0
-#95 percent confidence interval:
-#  37.04648 37.17868
-#sample estimates:
-#  mean of x mean of y 
-#42.118039  5.005458 
-t.test(nyt31Agenz,nyt31$Impressions,mu=0,alt="two.sided",conf=0.95,var.eq=F,paired=F)
-#Welch Two Sample t-test
-#data:  nyt31Agenz and nyt31$Impressions
-#t = 1253.7, df = 315899, p-value < 2.2e-16
-#alternative hypothesis: true difference in means is not equal to 0
-#95 percent confidence interval:
-#  37.06273 37.17880
-#sample estimates:
-#  mean of x mean of y 
-#42.11450   4.99374 
+
+df2<-filter(nyt12,Age>0,Impressions>0)
+chisq.test(df2$Age,df2$Impressions)
+#Pearson's Chi-squared test
+#data:  df2$Age and df2$Impressions
+#X-squared = 1817.5, df = 1700, p-value = 0.02374
+
+df3<-filter(nyt15,Age>0,Impressions>0)
+chisq.test(df3$Age,df3$Impressions)
+#Pearson's Chi-squared test
+#data:  df3$Age and df3$Impressions
+#X-squared = 1802.6, df = 1728, p-value = 0.1034
+
+df4<-filter(nyt23,Age>0,Impressions>0)
+chisq.test(df4$Age,df4$Impressions)
+#Pearson's Chi-squared test
+#data:  df4$Age and df4$Impressions
+#X-squared = 1453.1, df = 1683, p-value = 1
+
+df5<-filter(nyt31,Age>0,Impressions>0)
+chisq.test(df5$Age,df5$Impressions)
+#Pearson's Chi-squared test
+#data:  df5$Age and df5$Impressions
+#X-squared = 1657.6, df = 1800, p-value = 0.9924
