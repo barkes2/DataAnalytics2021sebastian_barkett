@@ -127,3 +127,88 @@ chisq.test(df5$Age,df5$Impressions)
 #Pearson's Chi-squared test
 #data:  df5$Age and df5$Impressions
 #X-squared = 1657.6, df = 1800, p-value = 0.9924
+
+#===================================================================================================================
+#Question 2 6600-lvl
+#For two datasets (nyt12 and nyt23) filter using one or more of the other variables
+#e.g. repeat Q1b,Q1c,and Q1d and draw conclusions
+#lets involve clicks
+head(nyt12)
+nyt12g1<-filter(nyt12, Gender==1)
+head(nyt12g1) #viewing the head of filtered data (restricted to gender value of 1)
+nyt12g0<-filter(nyt12,Gender==0)
+head(nyt12g0)
+head(nyt23)
+nyt23g1<-filter(nyt23, Gender==1)
+head(nyt23g1) #viewing the head of filtered data (restricted to gender value of 1)
+nyt23g0<-filter(nyt23,Gender==0)
+head(nyt23g0)
+#now lets remove any Age values of zero from nyt12 gender 1
+nyt12g1$Age[nyt12g1$Age==0]<-NA 
+tfg1<-is.na(nyt12g1$Age)
+nyt12g1Agenz<-nyt12g1$Age[!tfg1]
+nyt12g1Agenz
+#now lets remove any Age values of zero from nyt12 gender 0
+nyt12g0$Age[nyt12g0$Age==0]<-NA 
+tfg3<-is.na(nyt12g0$Age)
+nyt12g0Agenz<-nyt12g0$Age[!tfg3]
+nyt12g0Agenz
+#now lets remove any Age values of zero from nyt23 gender 1
+nyt23g1$Age[nyt23g1$Age==0]<-NA 
+tfg2<-is.na(nyt23g1$Age)
+nyt23g1Agenz<-nyt23g1$Age[!tfg2]
+nyt23g1Agenz
+#now lets remove any Age values of zero from nyt23 gender 0
+nyt23g0$Age[nyt23g0$Age==0]<-NA 
+tfg4<-is.na(nyt23g0$Age)
+nyt23g0Agenz<-nyt23g0$Age[!tfg4]
+nyt23g0Agenz
+#Time to make a histogram of the filtered data
+par(mfrow=c(2,2))
+hist(nyt12g1Agenz,breaks=14,ylab="Count of Users within Bin Age Group",xlab="Age",main="Histogram of Age in NYT12 Gender 1")
+hist(nyt12g0Agenz,breaks=13,ylab="Count of Users within Bin Age Group",xlab="Age",main="Histogram of Age in NYT12 Gender 0")
+hist(nyt23g1Agenz,breaks=13,ylab="Count of Users within Bin Age Group",xlab="Age",main="Histogram of Age in NYT23 Gender 1")
+hist(nyt23g0Agenz,breaks=13,ylab="Count of Users within Bin Age Group",xlab="Age",main="Histogram of Age in NYT23 Gender 0")
+par(mfrow=c(2,2))
+hist(nyt12g1$Impressions,breaks=15,ylab="Count of Users within Bin Impression Group",xlab="Impressions",main="Histogram Impressions NYT12 Gender 1")
+hist(nyt12g1$Impressions,breaks=14,ylab="Count of Users within Bin Impression Group",xlab="Impressions",main="Histogram Impressions NYT12 Gender 1")
+hist(nyt23g0$Impressions,breaks=14,ylab="Count of Users within Bin Impression Group",xlab="Impressions",main="Histogram Impressions NYT23 Gender 0")
+hist(nyt23g0$Impressions,breaks=14,ylab="Count of Users within Bin Impression Group",xlab="Impressions",main="Histogram Impressions NYT23 Gender 0")
+#Time to plot the ECDF of the Gender Filtered data for nyt12 and nyt23 for variables Age and Impressions
+library(gridExtra)
+library(grid)
+library(ggplot2)
+gA<-ggplot(nyt12g1, aes(x=Age,y=Impressions))
+gA+stat_ecdf()
+gB<-ggplot(nyt12g0, aes(x=Age,y=Impressions))
+gB+stat_ecdf()
+gC<-ggplot(nyt23g1, aes(x=Age,y=Impressions))
+gC+stat_ecdf()
+gD<-ggplot(nyt23g0, aes(x=Age,y=Impressions))
+gD+stat_ecdf()
+grid.arrange(gA+stat_ecdf(),gB+stat_ecdf(),gC+stat_ecdf(),gD+stat_ecdf(),top="ECDF for NYT12 & 23 Age vs Impressions Gender 0 & 1")
+#Time for some chi-sq testing of these groups
+library(dplyr)
+dfA<-filter(nyt12g0,Age>0,Impressions>0)
+chisq.test(dfA$Age,dfA$Impressions)
+#Pearson's Chi-squared test
+#data:  dfA$Age and dfA$Impressions
+#X-squared = 1393.1, df = 1455, p-value = 0.8752
+
+dfB<-filter(nyt12g1,Age>0,Impressions>0)
+chisq.test(dfB$Age,dfB$Impressions)
+#Pearson's Chi-squared test
+#data:  dfB$Age and dfB$Impressions
+#X-squared = 1736.2, df = 1649, p-value = 0.06628
+
+dfC<-filter(nyt23g0,Age>0,Impressions>0)
+chisq.test(dfC$Age,dfC$Impressions)
+#Pearson's Chi-squared test
+#data:  dfC$Age and dfC$Impressions
+#X-squared = 1434, df = 1649, p-value = 1
+
+dfD<-filter(nyt23g1,Age>0,Impressions>0)
+chisq.test(dfD$Age,dfD$Impressions)
+#Pearson's Chi-squared test
+#data:  dfD$Age and dfD$Impressions
+#X-squared = 1331.7, df = 1504, p-value = 0.9994
