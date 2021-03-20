@@ -158,7 +158,87 @@ g2<-ggplot(q2, aes(x=SALE.PRICE2,y=GROSS.SQUARE.FEET2))
 g2+stat_ecdf()
 g4<-ggplot(q4, aes(x=SALE.PRICE2,y=GROSS.SQUARE.FEET2))
 g4+stat_ecdf()
-d<-data.frame(x=c(0,9E+7))
-ll<-Map(f=stat_function,colour=c('red','green','blue'),
-        fun=list(g,g2,g4),geom='step')
-ggplot(data=d,aes(x=x))+ll
+par(mfrow=c(2,2))
+qqnorm(q1$GROSS.SQUARE.FEET2)
+qqline(q1$GROSS.SQUARE.FEET2,col='red')
+qqnorm(q2$GROSS.SQUARE.FEET2)
+qqline(q2$GROSS.SQUARE.FEET2,col='red')
+qqnorm(q4$GROSS.SQUARE.FEET2)
+qqline(q4$GROSS.SQUARE.FEET2,col='red')
+par(mfrow=c(2,2))
+qqnorm(q1$YEAR.BUILT)
+qqline(q1$YEAR.BUILT,col='orange')
+qqnorm(q2$YEAR.BUILT)
+qqline(q2$YEAR.BUILT,col='orange')
+qqnorm(q4$YEAR.BUILT)
+qqline(q4$YEAR.BUILT,col='orange')
+par(mfrow=c(2,2))
+qqnorm(q1$SALE.PRICE2)
+qqline(q1$SALE.PRICE2,col='brown')
+qqnorm(q2$SALE.PRICE2)
+qqline(q2$SALE.PRICE2,col='brown')
+qqnorm(q4$SALE.PRICE2)
+qqline(q4$SALE.PRICE2,col='brown')
+library(dplyr)
+df1<-filter(q1,SALE.PRICE2>0,GROSS.SQUARE.FEET2>0)
+chisq.test(df1$SALE.PRICE2,df1$GROSS.SQUARE.FEET2)
+#Pearson's Chi-squared test
+#data:  df1$SALE.PRICE2 and df1$GROSS.SQUARE.FEET2
+#X-squared = 3564127, df = 3359850, p-value < 2.2e-16
+#
+#Already did non-zero step so lets run without first line (e.g. line 183)
+chisq.test(q2$SALE.PRICE2,q2$GROSS.SQUARE.FEET2)
+#data:  q2$SALE.PRICE2 and q2$GROSS.SQUARE.FEET2
+#X-squared = 117536, df = 107822, p-value < 2.2e-16
+chisq.test(q4$SALE.PRICE2,q4$GROSS.SQUARE.FEET2)
+#data:  q4$SALE.PRICE2 and q4$GROSS.SQUARE.FEET2
+#X-squared = 120357, df = 118272, p-value = 1.007e-05
+#
+#Lets check out Year Built correlation to sale price
+chisq.test(q1$SALE.PRICE2,q1$YEAR.BUILT)
+#data:  q1$SALE.PRICE2 and q1$YEAR.BUILT
+#X-squared = 156945, df = 155070, p-value = 0.0003973
+chisq.test(q2$SALE.PRICE2,q2$YEAR.BUILT)
+#data:  q2$SALE.PRICE2 and q2$YEAR.BUILT
+#X-squared = 30859, df = 26477, p-value < 2.2e-16
+chisq.test(q4$SALE.PRICE2,q4$YEAR.BUILT)
+#data:  q4$SALE.PRICE2 and q4$YEAR.BUILT
+#X-squared = 29645, df = 28644, p-value = 1.757e-05
+#
+#At a first glance, it looks like year built is slightly less of an indicator
+#compared to gross square footage when it comes to sales price, but both
+#yield extremely significant p values.
+#It will become clear in the scatter that Year Built only has a loose corr
+#with sale price, as data distribution is irregular
+#Gross square footage is a better predictor of sales price
+#Building Scatterplots to view relationships better
+par(mfrow=c(2,2))
+plot(q1$SALE.PRICE2,q1$GROSS.SQUARE.FEET2,main="Scatterplot of Sales Price vs
+     Gross Square Feet TC1", xlab="Sale Price", ylab="Gross Square
+     Footage")
+abline(lm(q1$GROSS.SQUARE.FEET2~q1$SALE.PRICE2), col='red') #reg
+lines(lowess(q1$SALE.PRICE2,q1$GROSS.SQUARE.FEET2),col='blue') #lowes
+plot(q2$SALE.PRICE2,q2$GROSS.SQUARE.FEET2,main="Scatterplot of Sales Price vs
+     Gross Square Feet TC2", xlab="Sale Price", ylab="Gross Square
+     Footage")
+abline(lm(q2$GROSS.SQUARE.FEET2~q2$SALE.PRICE2), col='red') #reg
+lines(lowess(q2$SALE.PRICE2,q2$GROSS.SQUARE.FEET2),col='blue') #lowes
+plot(q4$SALE.PRICE2,q4$GROSS.SQUARE.FEET2,main="Scatterplot of Sales Price vs
+     Gross Square Feet TC4", xlab="Sale Price", ylab="Gross Square
+     Footage")
+abline(lm(q4$GROSS.SQUARE.FEET2~q4$SALE.PRICE2), col='red') #reg
+lines(lowess(q4$SALE.PRICE2,q4$GROSS.SQUARE.FEET2),col='blue') #lowes
+#
+par(mfrow=c(2,2))
+plot(q1$SALE.PRICE2,q1$YEAR.BUILT,main="Scatterplot of Sales Price vs
+     YEAR BUILT TC1", xlab="Sale Price", ylab="YEAR BUILT")
+abline(lm(q1$YEAR.BUILT~q1$SALE.PRICE2), col='red') #reg
+lines(lowess(q1$SALE.PRICE2,q1$YEAR.BUILT),col='blue') #lowes
+plot(q2$SALE.PRICE2,q2$YEAR.BUILT,main="Scatterplot of Sales Price vs
+     YEAR BUILT TC2", xlab="Sale Price", ylab="YEAR BUILT")
+abline(lm(q2$YEAR.BUILT~q2$SALE.PRICE2), col='red') #reg
+lines(lowess(q2$SALE.PRICE2,q2$YEAR.BUILT),col='blue') #lowes
+plot(q4$SALE.PRICE2,q4$YEAR.BUILT,main="Scatterplot of Sales Price vs
+     YEAR BUILT TC4", xlab="Sale Price", ylab="YEAR BUILT")
+abline(lm(q4$YEAR.BUILT~q4$SALE.PRICE2), col='red') #reg
+lines(lowess(q4$SALE.PRICE2,q4$YEAR.BUILT),col='blue') #lowes
