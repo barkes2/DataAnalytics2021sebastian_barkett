@@ -76,5 +76,89 @@ queensTC4_GSFNZ_YBNZ$SALE.PRICE2[queensTC4_GSFNZ_YBNZ$SALE.PRICE2==0]<-NA
 queensTC4_GSFNZ_YBNZ$SALE.PRICE2
 queensTC4_GSFNZ_YBNZ_SPNZ<-queensTC4_GSFNZ_YBNZ[complete.cases(queensTC4_GSFNZ_YBNZ),]
 View(queensTC4_GSFNZ_YBNZ_SPNZ)
+queensTC1_GSFNZ_YBNZ_SPNZ$GROSS.SQUARE.FEET2=as.numeric(gsub("[,]","",queensTC1_GSFNZ_YBNZ_SPNZ$GROSS.SQUARE.FEET))
+queensTC2_GSFNZ_YBNZ_SPNZ$GROSS.SQUARE.FEET2=as.numeric(gsub("[,]","",queensTC2_GSFNZ_YBNZ_SPNZ$GROSS.SQUARE.FEET))
+queensTC4_GSFNZ_YBNZ_SPNZ$GROSS.SQUARE.FEET2=as.numeric(gsub("[,]","",queensTC4_GSFNZ_YBNZ_SPNZ$GROSS.SQUARE.FEET))
+#Simplifying our dataframe names
+q1<-queensTC1_GSFNZ_YBNZ_SPNZ
+q2<-queensTC2_GSFNZ_YBNZ_SPNZ
+q4<-queensTC4_GSFNZ_YBNZ_SPNZ
 #So now all three of our variables are non-zero (GROSS.SQUARE.FEET,SALE.PRICE2, 
 #& YEAR.BUILT) and sorted into our three tax classes with n>0
+#lets start with histograms
+par(mfrow=c(2,2))
+q1GSF<-q1$GROSS.SQUARE.FEET2
+q1GSF
+hist(q1GSF,breaks=100,ylab="Count of Households in Gross Square Feet Bracket",
+     xlab="Gross Square Feet in Queens Tax Class 1",main="Histogram of Gross 
+     Square Feet for Tax Class 1 in Queens")
+summary(q1GSF)
+q2GSF<-q2$GROSS.SQUARE.FEET2
+q2GSF
+hist(q2GSF,breaks=40,ylab="Count of Households in Gross Square Feet Bracket",
+     xlab="Gross Square Feet in Queens Tax Class 2",main="Histogram of Gross 
+     Square Feet for Tax Class 2 in Queens")
+summary(q2GSF)
+#class 2 properties are considered income generating properties
+q4GSF<-q4$GROSS.SQUARE.FEET2
+q4GSF
+hist(q4GSF,breaks=100,ylab="Count of Households in Gross Square Feet Bracket",
+     xlab="Gross Square Feet in Queens Tax Class 4",main="Histogram of Gross 
+     Square Feet for Tax Class 4 in Queens")
+summary(q1GSF)
+#Lets make Histograms for Sale.Price
+par(mfrow=c(2,2))
+q1SP<-q1$SALE.PRICE2
+q1SP
+hist(q1SP,breaks=45,ylab="Count of Sale Price Bracket",
+     xlab="Sale Price in Queens Tax Class 1",main="Histogram of Sale Price for 
+     Tax Class 1 in Queens")
+summary(q1SP)
+q2SP<-q2$SALE.PRICE2
+q2SP
+hist(q2SP,breaks=90,ylab="Count of Sale Price Bracket",
+     xlab="Sale Price in Queens Tax Class 2",main="Histogram of Sale Price for 
+     Tax Class 2 in Queens")
+summary(q2SP)
+q4SP<-q4$SALE.PRICE2
+q4SP
+hist(q4SP,breaks=90,ylab="Count of Sale Price Bracket",
+     xlab="Sale Price in Queens Tax Class 4",main="Histogram of Sale Price for 
+     Tax Class 4 in Queens")
+summary(q4SP)
+#Finally lets run a histogram for year.built
+par(mfrow=c(2,2))
+q1YB<-q1$YEAR.BUILT
+q1YB
+hist(q1YB,breaks=45,ylab="Count in Year Bracket",
+     xlab="Year Built Queens Tax Class 1",main="Histogram of Year Built for 
+     Tax Class 1 in Queens")
+summary(q1YB)
+q2YB<-q2$YEAR.BUILT
+q2YB
+hist(q2YB,breaks=40,ylab="Count in Year Bracket",
+     xlab="Year Built Queens Tax Class 2",main="Histogram of Year Built for 
+     Tax Class 2 in Queens")
+summary(q2YB)
+q4YB<-q4$YEAR.BUILT
+q4YB
+hist(q4YB,breaks=30,ylab="Count in Year Bracket",
+     xlab="Year Built Queens Tax Class 4",main="Histogram of Year Built for 
+     Tax Class 2 in Queens")
+summary(q4YB)
+#Now that we have looked at all of the distributions for our data/variables
+#lets plot the ECDF for Sale.Price X Gross.Square.Feet and Sale.Price X 
+#Year.Built
+library(gridExtra)
+library(grid)
+library(ggplot2)
+g<-ggplot(q1, aes(x=SALE.PRICE2,y=GROSS.SQUARE.FEET2))
+g+stat_ecdf()
+g2<-ggplot(q2, aes(x=SALE.PRICE2,y=GROSS.SQUARE.FEET2))
+g2+stat_ecdf()
+g4<-ggplot(q4, aes(x=SALE.PRICE2,y=GROSS.SQUARE.FEET2))
+g4+stat_ecdf()
+d<-data.frame(x=c(0,9E+7))
+ll<-Map(f=stat_function,colour=c('red','green','blue'),
+        fun=list(g,g2,g4),geom='step')
+ggplot(data=d,aes(x=x))+ll
