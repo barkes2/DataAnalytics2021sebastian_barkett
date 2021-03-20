@@ -10,20 +10,24 @@ summary(TAX.CLASS.AT.TIME.OF.SALE)
 #at time of sale
 head(queens)
 queensTC1<-subset(queens, TAX.CLASS.AT.TIME.OF.SALE=='1')
-View(queensTC1)
+#View(queensTC1)
 summary(queensTC1)
 queensTC2<-subset(queens, TAX.CLASS.AT.TIME.OF.SALE=='2')
-View(queensTC2)
-summary(queensTC1)
+#View(queensTC2)
+summary(queensTC2)
 queensTC3<-subset(queens, TAX.CLASS.AT.TIME.OF.SALE=='3')
-View(queensTC3)
-summary(queensTC1)
-head(queens)
+#View(queensTC3)
+summary(queensTC3)
 queensTC4<-subset(queens, TAX.CLASS.AT.TIME.OF.SALE=='4')
-View(queensTC4)
+#View(queensTC4)
+summary(queensTC4)
 #Only identifiable issue is the lack of n in queensTC3 dataframe
 #anyways next step is going to be to filter out gross square feet of 0 for each
+head(queensTC1)
+#set the zeros to NA
 queensTC1$GROSS.SQUARE.FEET[queensTC1$GROSS.SQUARE.FEET==0]<-NA
-tf0<-is.na(queensTC1$GROSS.SQUARE.FEET)
-queensTC1_GSFNZ<-queensTC1$GROSS.SQUARE.FEET[!tf0]
-View(queensTC1_GSFNZ)
+queensTC1$GROSS.SQUARE.FEET
+#Delete the associated rows
+queensTC1_GSFNZ<-queensTC1[complete.cases(queensTC1),]
+#View(queensTC1_GSFNZ)
+#now lets do this for the other 4 tax classes
