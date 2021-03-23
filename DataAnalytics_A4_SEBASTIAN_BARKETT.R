@@ -242,3 +242,29 @@ plot(q4$SALE.PRICE2,q4$YEAR.BUILT,main="Scatterplot of Sales Price vs
      YEAR BUILT TC4", xlab="Sale Price", ylab="YEAR BUILT")
 abline(lm(q4$YEAR.BUILT~q4$SALE.PRICE2), col='red') #reg
 lines(lowess(q4$SALE.PRICE2,q4$YEAR.BUILT),col='blue') #lowes
+#
+#Lets use knn to predict the sale price
+#KNN needs to be numeric
+head(q1)
+#need to remove any non-numeric columns such as Neighborhood, Building class cat
+#, building class at present, address, sale date etc.
+q1$NEIGHBORHOOD<-NULL
+q1$BUILDING.CLASS.CATEGORY<-NULL
+q1$BUILDING.CLASS.AT.PRESENT<-NULL
+q1$ADDRESS<-NULL
+q1$SALE.DATE<-NULL
+q1$EASE.MENT<-NULL
+q1$APART.MENT.NUMBER<-NULL
+q1$BUILDING.CLASS.AT.TIME.OF.SALE<-NULL
+q1$SALE.PRICE<-NULL
+q1$GROSS.SQUARE.FEET<-NULL
+q1$LAND.SQUARE.FEET<-NULL
+head(q1) #only columns with strictly numeric values left
+#first we will normalize the data usin min max normalization
+x<-q1$SALE.PRICE2
+normalize<-function(x){
+        return((x-min(x,na.rm=TRUE))/(max(x,na.rm=TRUE)-min(x,na.rm=TRUE)))
+}
+norm_dataq1<-as.data.frame(lapply(q1[9:12],normalize))
+warnings()
+norm_dataq1
