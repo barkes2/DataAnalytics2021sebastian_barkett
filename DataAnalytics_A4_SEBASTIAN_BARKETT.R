@@ -242,29 +242,51 @@ plot(q4$SALE.PRICE2,q4$YEAR.BUILT,main="Scatterplot of Sales Price vs
      YEAR BUILT TC4", xlab="Sale Price", ylab="YEAR BUILT")
 abline(lm(q4$YEAR.BUILT~q4$SALE.PRICE2), col='red') #reg
 lines(lowess(q4$SALE.PRICE2,q4$YEAR.BUILT),col='blue') #lowes
-#
-#Lets use knn to predict the sale price
-#KNN needs to be numeric
+#K-means
+library(ggplot2)
 head(q1)
-#need to remove any non-numeric columns such as Neighborhood, Building class cat
-#, building class at present, address, sale date etc.
-q1$NEIGHBORHOOD<-NULL
-q1$BUILDING.CLASS.CATEGORY<-NULL
-q1$BUILDING.CLASS.AT.PRESENT<-NULL
-q1$ADDRESS<-NULL
-q1$SALE.DATE<-NULL
-q1$EASE.MENT<-NULL
-q1$APART.MENT.NUMBER<-NULL
-q1$BUILDING.CLASS.AT.TIME.OF.SALE<-NULL
-q1$SALE.PRICE<-NULL
-q1$GROSS.SQUARE.FEET<-NULL
-q1$LAND.SQUARE.FEET<-NULL
-head(q1) #only columns with strictly numeric values left
-#first we will normalize the data usin min max normalization
-x<-q1$SALE.PRICE2
-normalize<-function(x){
-        return((x-min(x,na.rm=TRUE))/(max(x,na.rm=TRUE)-min(x,na.rm=TRUE)))
-}
-norm_dataq1<-as.data.frame(lapply(q1[9:12],normalize))
-warnings()
-norm_dataq1
+str(q1)
+#help(str)
+summary(q1)
+#help(sapply)
+ggplot(q1,aes(x=q1$GROSS.SQUARE.FEET2,y=q1$SALE.PRICE2))+geom_point()
+ggplot(q1,aes(x=q1$YEAR.BUILT,y=q1$SALE.PRICE2))+geom_point()
+#lets determine how many clusters we can get with the GSF/SP relationship
+#using the iris dataset, create a new dataframe and remove the fifth column.  
+head(queens) #loading our dataset
+dfqueens<-subset(queens,select=-c(SALE.DATE,BUILDING.CLASS.AT.TIME.OF.SALE,LAND.SQUARE.FEET,TOTAL.UNITS,COMMERCIAL.UNITS,RESIDENTIAL.UNITS,ZIP.CODE,APART.MENT.NUMBER,ADDRESS,EASE.MENT,BUILDING.CLASS.AT.PRESENT,BLOCK,LOT,BUILDING.CLASS.CATEGORY,NEIGHBORHOOD,BOROUGH)) 
+head(dfqueens)
+dfqueens$GROSS.SQUARE.FEET2=as.numeric(gsub("[,]","",dfqueens$GROSS.SQUARE.FEET))
+dfqueens$SALE.PRICE2=as.numeric(gsub("[,$]","",dfqueens$SALE.PRICE))
+dfqueens2<-subset(dfqueens,select=-c(GROSS.SQUARE.FEET,SALE.PRICE))
+#time to remove zeros
+dfqueens2$YEAR.BUILT[dfqueens2$YEAR.BUILT==0]<-NA
+#remove NAs
+dfqueens2_YBNZ<-dfqueens2[complete.cases(dfqueens2),]
+View(dfqueens2_YBNZ)
+dfqueens2_YBNZ$GROSS.SQUARE.FEET2[dfqueens2_YBNZ$GROSS.SQUARE.FEET2==0]<-NA
+dfqueens_NZ<-dfqueens2_YBNZ[complete.cases(dfqueens2_YBNZ)]
+dfqueens2_YBNZ$SALE.PRICE2[dfqueens2_YBNZ$SALE.PRICE2==0]<-NA
+dfqueens_NZ<-dfqueens2_YBNZ[complete.cases(dfqueens2_YBNZ),]
+View(dfqueens_NZ)
+dfqueens_NZ<-subset(dfqueens_NZ,select=-c(TAX.CLASS.AT.PRESENT,TAX.CLASS.AT.TIME.OF.SALE))#removing TC
+dfqueensScale<-scale(dfqueens_NZ) #scaling the data
+head(dfqueensScale, n=3)
+#
+#loading the required packages
+library(factoextra)
+library(NbClust)
+#
+#Elbow method for optimal clustering
+fviz_nbclust(dfqueensScale,kmeans,method="wss")+geom_vline(xintercept=4,linetype=2)+labs(subtitle="Queens Elbow Method")
+#geom_vline function adds a line for better visualization, and labs(subtitle="") function adds a subtitle
+#appears that 4 clusters is ideal for the queens dataset from this method (4 tax classes in reality)
+#
+#Silhouette method
+fviz_nbclust(dfqueensScale,kmeans,method="silhouette")+labs(subtitle="Queens Silhouette Method")
+#this method suggests only two clusters for the iris dataset
+#
+#Gap statistic method
+set.seed(123)
+fviz_nbclust(dfqueensScale,kmeans,nstart=25,method="gap_stat",nboot=500)+labs(subtitle = "Queens Gap Statistic Method")
+#this method suggests only 2 clusters
