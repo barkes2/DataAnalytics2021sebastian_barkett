@@ -94,8 +94,7 @@ cor.test(AMBIENT.PRESSURE..Pa.,TOTAL.PRESSURE..Pa.)
 #Pearson's
 htp.cor=cor(htpnewnz,method=c("pearson"))
 View(htp.cor)
-install.packages("xlsx")
-library(xlsx)
+#install.packages("xlsx")
 write.table(htp.cor,"C:/Users/sdbar/Box Sync/HUYGENS/csv FOR DA\\HuygensPressureTempPearsonMatrix.txt",sep="\t")
 #after checking out the correlation matrix, it appears that both ambient and 
 #total pressure are somewhat negatively correlated with altitude (m) indicating
@@ -106,3 +105,39 @@ write.table(htp.cor,"C:/Users/sdbar/Box Sync/HUYGENS/csv FOR DA\\HuygensPressure
 #as for our strongest relationship of temperature and altitude, we can see a 
 #positive correlation value of roughly 0.803 meaning that as altitude decreases,
 #temperature steadily drops along-side this
+#===============================================================================
+#Monte Carlo Simulation
+#install.packages("MonteCarlo")
+library(dplyr)
+names(htpnewnz)
+htp.sample<-sample_n(htpnewnz,300)
+View(htp.sample)
+#took a sample of 300 points from my dataframe containing non-zero/NA for all 
+#columns
+hist(htp.sample$ALTITUDE..M..x)
+#distribution of altitude data has shifted torward lower altitude readings
+N=2000
+simulated_means_htp<-rep(htpnewnz, N)
+par(mfrow=c(2,3))
+hist(simulated_means_htp$ALTITUDE..M..x,xlab="Altitude (m)",main="Histogram of 
+     Simulated Means for Altitude")
+hist(simulated_means_htp$TEMPERATURE..K.,xlab="Temperature (K)",main="Histogram of 
+     Simulated Means for Temperature")
+hist(simulated_means_htp$TOTAL.PRESSURE..Pa.,xlab="Total Pressure (Pa)",main="Histogram of 
+     Simulated Means for Total Pressure")
+hist(simulated_means_htp$AMBIENT.PRESSURE..Pa.,xlab="Ambient Pressure (Pa)",main="Histogram of 
+     Simulated Means for Ambient Pressure")
+hist(simulated_means_htp$DESCENT.VELOCITY..M.S.,xlab="Descent Velocity (m/s)",main="Histogram of 
+     Simulated Means for Descent Velocity")
+#is standard dev needed?
+
+simulated_means.Alt<-rep(htp.sample$ALTITUDE..M..x,2000)
+head(simulated_means.Alt)
+for (i in 1:N){
+  sim_data.Alt<-htp.sample$ALTITUDE..M..x
+  simulated_means.Alt[i]<-mean(sim_data.Alt)
+  rm(sim_data.Alt)
+}
+hist(simulated_means.Alt)
+sd(simulated_means.Alt)
+#massive sd
